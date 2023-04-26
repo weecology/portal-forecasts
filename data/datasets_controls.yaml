@@ -1,7 +1,9 @@
 all:
   metadata:
     name: all
-    descriptor: classic dataset, all plots combined
+    tags:
+    - classic dataset
+    - exclosure plots combined
     text: Twenty focal species and total abundance summed across all plots at the
       newmoon.
   fun: prepare_dataset
@@ -41,13 +43,15 @@ all:
     unknowns: no
     time: newmoon
     na_drop: no
-    zero_drop: yes
+    zero_drop: no
     effort: yes
     filename: rodents_all.csv
 controls:
   metadata:
     name: controls
-    descriptor: classic dataset, control plots combined
+    tags:
+    - classic dataset
+    - exclosure plots combined
     text: Twenty focal species and total abundance summed across control plots at
       the newmoon.
   fun: prepare_dataset
@@ -87,13 +91,15 @@ controls:
     unknowns: no
     time: newmoon
     na_drop: no
-    zero_drop: yes
+    zero_drop: no
     effort: yes
     filename: rodents_controls.csv
 exclosures:
   metadata:
     name: exclosures
-    descriptor: classic dataset, exclosure plots combined
+    tags:
+    - classic dataset
+    - exclosure plots combined
     text: Twenty focal species and total abundance summed across exclosure plots at
       the newmoon.
   fun: prepare_dataset
@@ -133,6 +139,6 @@ exclosures:
     unknowns: no
     time: newmoon
     na_drop: no
-    zero_drop: yes
+    zero_drop: no
     effort: yes
     filename: rodents_exclosures.csv
