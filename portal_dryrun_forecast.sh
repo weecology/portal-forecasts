@@ -22,10 +22,10 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating forecasts repository"
 rm -rf forecasts
 git clone https://github.com/weecology/forecasts.git
 
-echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portalPredictions repository"
-rm -rf portalPredictions
-git clone https://github.com/weecology/portalPredictions.git
-cd portalPredictions
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portal-forecasts repository"
+rm -rf portal-forecasts
+git clone https://github.com/weecology/portal-forecasts.git
+cd portal-forecasts
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts_dryrun.R

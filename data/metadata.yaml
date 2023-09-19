@@ -611,7 +611,7 @@ directory_configuration:
       PortalData:
         source: github
         version: latest
-      portalPredictions:
+      portal-forecasts:
         source: github
         version: latest
       climate_forecasts:
@@ -625,7 +625,7 @@ directory_configuration:
       PortalData_version: 4.7.0
       archive_version: latest
       climate_forecast_version: '2023-04-25'
-    repository: portalPredictions
+    repository: portal-forecasts
     confidence_level: 0.95
     nsamples: 10000.0
     time:

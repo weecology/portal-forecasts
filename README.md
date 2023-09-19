@@ -1,7 +1,7 @@
-# Portal Predictions
-[![Metadata Check](https://github.com/weecology/portalPredictions/actions/workflows/r.yml/badge.svg)](https://github.com/weecology/portalPredictions/actions/workflows/r.yml)
+# Portal Forecsts
+[![Metadata Check](https://github.com/weecology/portal-forecasts/actions/workflows/r.yml/badge.svg)](https://github.com/weecology/portal-forecasts/actions/workflows/r.yml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.833438.svg)](https://doi.org/10.5281/zenodo.833438)
-[![License](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/weecology/portalPredictions/main/LICENSE)
+[![License](http://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/weecology/portal-forecasts/main/LICENSE)
 [![NSF-1929730](https://img.shields.io/badge/NSF-1929730-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1929730)
 
 #### [Portal Forecasting Website](https://portal.naturecast.org/)
@@ -27,10 +27,10 @@ The cron job runs a version of `portal_weekly_forecast.sh` that is separate from
 The version of `portal_weekly_forecast.sh` in the repo is automatically updated to the one that is run on HiPerGator after the weekly forecasts are complete. 
 
 `portal_weekly_forecast.sh` does the following:
-* Updates the `portalPredictions` repository to it's current version
+* Updates the `portal-forecasts` repository to it's current version
 * Updates the `forecasts` repository to it's current version (this repository is used for archiving full forecasts)
 * Runs the forecasts
-* Pushes the results of the forecasts in the `forecasts` and `models` and `data` directories to the `portalPredictions` repository
+* Pushes the results of the forecasts in the `forecasts` and `models` and `data` directories to the `portal-forecasts` repository
 * Pushes the results of the forecasts in the `forecasts` and `models` and `data` directories and also the `fits` directory to the `forecasts` repository
 * Tests to see if forecasts ran correctly
 
@@ -47,6 +47,6 @@ There are 4 log files:
 
 If necessary to create a fresh setup this system:
 1. Create a root directory (`PortalForecasts`)
-2. Clone `portalPredictions` into that directory
+2. Clone `portal-forecasts` into that directory
 3. Clone `forecasts` into that directory
-4. Copy `portal_weekly_forecast.sh` and `portal_dryrun_forecast.sh` from `portalPredictions` into the root directory.  
+4. Copy `portal_weekly_forecast.sh` and `portal_dryrun_forecast.sh` from `portal-forecasts` into the root directory.
