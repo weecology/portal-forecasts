@@ -1,6 +1,6 @@
-## Running portalPredictions on HiperGator
+## Running portal-forecasts on HiperGator
 
-Full runs of portalPredictions are computationally intensive so we run the
+Full runs of portal-forecasts are computationally intensive so we run the
 weekly forecasts on the University of Florida's High Performance Computer, the
 HiPerGator. 
 
@@ -16,7 +16,7 @@ To set this up follow these steps:
 3. Create a cronjob by running `crontab -e` and pasting the contents of
    `crontab.txt` into the resulting editor and replacing
    `WEECOLOGYDEPLOYGITHUBPAT` with a GitHub Personal Access token that has
-   "Repository" permissions on the `weecology/portalPredictions` and
+   "Repository" permissions on the `weecology/portal-forecasts` and
    `weecology/forecast` repositories (e.g., the `weecologydeploy` bot).
 
 ### Testing Runs
@@ -29,7 +29,7 @@ To set this up follow these steps:
 1. Copy `portalcasting_weekly.sh` into the home directory of the user under
    which the job will run.
 2. Change this copy of `portalcasting_weekly.sh` to use the users email
-   address and clone the `portalPredictions` repository from the users fork.
+   address and clone the `portal-forecasts` repository from the users fork.
 3. Change `archive_hipergator.sh` to push to the users fork. Optionally this
    change could push to a branch in the users fork instead of `main` and remove everything below line 47 (the code for archiving to `weecology/forecasts`).
 4. `ssh` from `hpg2` into the `daemon2` server.

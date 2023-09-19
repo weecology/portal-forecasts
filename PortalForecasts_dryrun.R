@@ -10,3 +10,6 @@ portalcast(models = c("ESSS"))
 
 #Evaluate model forecast
 evaluate_forecast()
+
+#Zip all forecasts files and evaluation
+post_process()

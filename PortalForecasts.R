@@ -11,3 +11,6 @@ portalcast()
 
 #Evaluate all un-evaluated forecasts
 evaluate_forecasts()
+
+#Zip all forecasts files and evaluation
+post_process()
