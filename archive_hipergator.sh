@@ -17,12 +17,18 @@ git config user.name "Weecology Deploy Bot"
 
 # Commit changes to portal-forecasts repo
 git checkout main
+
+# zip forecasts files by data
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] zipping forecasts files"
+Rscript setup_forecasts_files.R zip
+
 git add data/* models/* forecasts/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
 git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
 
 # Add deploy remote
 # Needed to grant permissions through the deploy token
-git remote remove deploy # Removing the remote ensures that updates to the GitHub Token are added to the remote
+# Removing the remote ensures that updates to the GitHub Token are added to the remote
+git remote remove deploy
 git remote add deploy https://${GITHUB_TOKEN}@github.com/weecology/portal-forecasts.git
 
 # Create a new portal-forecasts tag for release
@@ -36,31 +42,3 @@ git push --quiet deploy main
 # Create a new portal-forecasts release to trigger Zenodo archiving
 git push --quiet deploy --tags
 curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUB_RELEASE_TOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
-
-
-# Clone forecasts archive repo
-cd ../
-git clone https://github.com/weecology/forecasts
-cp portal-forecasts/forecasts/*.* forecasts/portal/
-cp portal-forecasts/fits/*.* forecasts/portal/
-cd forecasts
-
-# Setup on weecologydeploy user
-git config user.email "weecologydeploy@weecology.org"
-git config user.name "Weecology Deploy Bot"
-
-# Commit to forecasts repo
-git add .
-git commit -m "Update Portal forecasts: Build $current_date"
-git remote remove deploy # Removing the remote ensures that updates to the GitHub Token are added to the remote
-git remote add deploy https://${GITHUB_TOKEN}@github.com/weecology/forecasts.git
-
-# Create a new forecasts tag
-git tag $current_date
-
-# Push updates to forecasts archive repo
-git push --quiet deploy main
-
-# Create a new forecasts release to trigger Zenodo archiving
-git push --quiet deploy --tags
-curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/weecology/forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
