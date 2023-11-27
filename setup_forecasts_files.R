@@ -40,7 +40,7 @@ zip_unzip <- function(type=NULL){
   }
 
   if (type=="unzip"){
-    print("zipping forecasts files")
+    print("unzipping forecasts files")
     # unzip files basing on unique_dates
     for (forecast_day in unique_dates){
       zipfile <- paste0(proj_path, "forecast_id_", forecast_day, ".zip")
@@ -50,7 +50,6 @@ zip_unzip <- function(type=NULL){
       }
     }
   }
-
 }
 
 zip_unzip(args[1])
