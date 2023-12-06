@@ -23,10 +23,6 @@ rm -rf portal-forecasts
 git clone https://github.com/weecology/portal-forecasts.git
 cd portal-forecasts
 
-# unzip forecasts zipped files
-echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Unzipping forecasts zipped files"
-Rscript setup_forecasts_files.R unzip
-
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R
 
