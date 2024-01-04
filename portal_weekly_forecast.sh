@@ -3,7 +3,7 @@
 #SBATCH --mail-user=portal-forecasts-aaaaamelbeyabgcqol6s4p4cja@weecology.slack.com
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1
-#SBATCH --mem=2gb
+#SBATCH --mem=8gb
 #SBATCH --time=12:00:00
 #SBATCH --partition=hpg2-compute
 #SBATCH --output=portal_weekly_forecast_log.out
