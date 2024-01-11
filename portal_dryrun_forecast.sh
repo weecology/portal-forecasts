@@ -3,11 +3,11 @@
 #SBATCH --mail-user=portal-forecasts-aaaaamelbeyabgcqol6s4p4cja@weecology.slack.com
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1
-#SBATCH --mem=8gb
+#SBATCH --mem=16gb
 #SBATCH --time=12:00:00
 #SBATCH --partition=hpg2-compute
-#SBATCH --output=portal_dryrun_forecast_log.out
-#SBATCH --error=portal_dryrun_forecast_log.err
+#SBATCH --output=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.out
+#SBATCH --error=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.err
 
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
 
