@@ -3,11 +3,11 @@
 #SBATCH --mail-user=portal-forecasts-aaaaamelbeyabgcqol6s4p4cja@weecology.slack.com
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1
-#SBATCH --mem=2gb
+#SBATCH --mem=16gb
 #SBATCH --time=12:00:00
 #SBATCH --partition=hpg2-compute
-#SBATCH --output=portal_weekly_forecast_log.out
-#SBATCH --error=portal_weekly_forecast_log.err
+#SBATCH --output=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.out
+#SBATCH --error=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.err
 
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
 
@@ -24,7 +24,7 @@ git clone https://github.com/weecology/portal-forecasts.git
 cd portal-forecasts
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
-singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R
+singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R  2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
 # Redirect stderr(2) to stdout(1) if command fails, and exit script with 1

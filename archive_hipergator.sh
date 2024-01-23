@@ -17,11 +17,6 @@ git config user.name "Weecology Deploy Bot"
 
 # Commit changes to portal-forecasts repo
 git checkout main
-
-# zip forecasts files by data
-echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] zipping forecasts files"
-Rscript setup_forecasts_files.R zip
-
 git add data/* models/* forecasts/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
 git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
 
