@@ -39,4 +39,5 @@ git push --quiet deploy main
 
 # Create a new portal-forecasts release to trigger Zenodo archiving
 git push --quiet deploy --tags
-curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUB_RELEASE_TOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
+curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
+
