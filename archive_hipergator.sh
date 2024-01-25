@@ -15,9 +15,12 @@ cp ../portal_dryrun_forecast.sh .
 git config user.email "weecologydeploy@weecology.org"
 git config user.name "Weecology Deploy Bot"
 
-# Commit changes to portal-forecasts repo
+# Commit changes to portal-forecasts repo. Do not commit old forecasts files.
 git checkout main
-git add data/* models/* forecasts/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
+git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
+git ls-files ./forecasts --others --exclude-standard --directory | xargs git add
+git add forecasts/forecasts_evaluations.zip forecasts/forecasts_metadata.csv forecasts/forecasts_results.csv
+
 git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
 
 # Add deploy remote
