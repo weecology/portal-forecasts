@@ -453,6 +453,6 @@
 "pevGARCH","exclosures","total",true
 "jags_RW","controls","DM",true
 "jags_logistic","controls","DM",true
-"jags_logistic_covariates","controls","DM",true
+"jags_logistic_covariates","controls","DM",false
 "jags_logistic_competition","controls","DM",true
 "jags_logistic_competition_covariates","controls","DM",true
