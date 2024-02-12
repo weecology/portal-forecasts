@@ -238,7 +238,7 @@
 "nbGARCH","all","DM",true
 "nbGARCH","all","DO",true
 "nbGARCH","all","NA",true
-"nbGARCH","all","OL",false
+"nbGARCH","all","OL",true
 "nbGARCH","all","OT",true
 "nbGARCH","all","PB",true
 "nbGARCH","all","PE",true
@@ -286,7 +286,7 @@
 "nbsGARCH","all","PL",true
 "nbsGARCH","all","PM",true
 "nbsGARCH","all","PP",true
-"nbsGARCH","all","RM",false
+"nbsGARCH","all","RM",true
 "nbsGARCH","all","RO",true
 "nbsGARCH","all","SF",true
 "nbsGARCH","all","SH",true
@@ -453,6 +453,6 @@
 "pevGARCH","exclosures","total",true
 "jags_RW","controls","DM",true
 "jags_logistic","controls","DM",true
-"jags_logistic_covariates","controls","DM",false
+"jags_logistic_covariates","controls","DM",true
 "jags_logistic_competition","controls","DM",true
 "jags_logistic_competition_covariates","controls","DM",true

@@ -1,15 +1,15 @@
 time:
   timeseries_start: '1995-01-01'
   timeseries_start_lagged: '1993-11-02'
-  forecast_end: '2025-02-04'
-  forecast_end_buffered: '2025-03-06'
+  forecast_end: '2025-02-11'
+  forecast_end_buffered: '2025-03-13'
   lead_time: 365.0
   max_lag: 365.0
   lag_buffer: 60.0
-  forecast_date: '2024-02-05'
-  origin: '2024-02-05'
+  forecast_date: '2024-02-12'
+  origin: '2024-02-12'
   historic_start_newmoonnumber: 217
-  historic_end_newmoonnumber: 576
+  historic_end_newmoonnumber: 577
   historic_newmoonnumbers:
   - 217
   - 218
@@ -371,10 +371,10 @@ time:
   - 574
   - 575
   - 576
-  forecast_start_newmoonnumber: 577
-  forecast_end_newmoonnumber: 589
-  forecast_newmoonnumbers:
   - 577
+  forecast_start_newmoonnumber: 578
+  forecast_end_newmoonnumber: 590
+  forecast_newmoonnumbers:
   - 578
   - 579
   - 580
@@ -387,6 +387,7 @@ time:
   - 587
   - 588
   - 589
+  - 590
   forecast_years:
   - '2024'
   - '2024'
@@ -399,10 +400,9 @@ time:
   - '2024'
   - '2024'
   - '2024'
-  - '2024'
+  - '2025'
   - '2025'
   forecast_months:
-  - '02'
   - '03'
   - '04'
   - '05'
@@ -415,8 +415,9 @@ time:
   - '11'
   - '12'
   - '01'
+  - '02'
   lead_time_newmoons: 13
-forecast_group: 129.0
+forecast_group: 130.0
 datasets_controls:
   all:
     metadata:
@@ -566,7 +567,7 @@ confidence_level: 0.95
 nsamples: 10000.0
 directory_configuration:
   setup:
-    date: '2024-02-05'
+    date: '2024-02-12'
     R_version:
       platform: x86_64-pc-linux-gnu
       arch: x86_64
@@ -627,26 +628,26 @@ directory_configuration:
         version: latest
       climate_forecasts:
         source: NMME
-        version: '2024-02-05'
+        version: '2024-02-12'
         data:
           mintemp: tasmin
           meantemp: tasmean
           maxtemp: tasmax
           precipitation: pr
-      PortalData_version: 5.42.1
+      PortalData_version: 5.42.2
       archive_version: latest
-      climate_forecast_version: '2024-02-05'
+      climate_forecast_version: '2024-02-12'
     repository: portal-forecasts
     confidence_level: 0.95
     nsamples: 10000.0
     time:
       timeseries_start: '1995-01-01'
       timeseries_start_lagged: '1993-11-02'
-      forecast_start: '2024-02-06'
-      forecast_end: '2025-02-04'
-      forecast_end_buffered: '2025-03-06'
-      origin: '2024-02-05'
-      forecast_date: '2024-02-05'
+      forecast_start: '2024-02-13'
+      forecast_end: '2025-02-11'
+      forecast_end_buffered: '2025-03-13'
+      origin: '2024-02-12'
+      forecast_date: '2024-02-12'
       lead_time: 365.0
       lead_time_buffer: 30.0
       max_lag: 365.0
