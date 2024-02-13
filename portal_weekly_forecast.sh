@@ -10,6 +10,7 @@
 #SBATCH --error=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.err
 
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
+cd /orange/ewhite/PortalForecasts/
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh
