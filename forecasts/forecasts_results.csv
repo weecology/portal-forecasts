@@ -286,7 +286,7 @@
 "nbsGARCH","all","PL",true
 "nbsGARCH","all","PM",true
 "nbsGARCH","all","PP",true
-"nbsGARCH","all","RM",true
+"nbsGARCH","all","RM",false
 "nbsGARCH","all","RO",true
 "nbsGARCH","all","SF",true
 "nbsGARCH","all","SH",true
