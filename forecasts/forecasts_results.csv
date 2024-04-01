@@ -238,7 +238,7 @@
 "nbGARCH","all","DM",true
 "nbGARCH","all","DO",true
 "nbGARCH","all","NA",true
-"nbGARCH","all","OL",true
+"nbGARCH","all","OL",false
 "nbGARCH","all","OT",true
 "nbGARCH","all","PB",true
 "nbGARCH","all","PE",true
@@ -268,7 +268,7 @@
 "nbGARCH","exclosures","OT",true
 "nbGARCH","exclosures","PB",true
 "nbGARCH","exclosures","PE",true
-"nbGARCH","exclosures","PF",true
+"nbGARCH","exclosures","PF",false
 "nbGARCH","exclosures","PM",true
 "nbGARCH","exclosures","PP",true
 "nbGARCH","exclosures","SF",true
