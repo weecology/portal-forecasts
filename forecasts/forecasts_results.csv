@@ -238,7 +238,7 @@
 "nbGARCH","all","DM",true
 "nbGARCH","all","DO",true
 "nbGARCH","all","NA",true
-"nbGARCH","all","OL",true
+"nbGARCH","all","OL",false
 "nbGARCH","all","OT",true
 "nbGARCH","all","PB",true
 "nbGARCH","all","PE",true
