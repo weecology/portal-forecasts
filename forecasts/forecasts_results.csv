@@ -246,7 +246,7 @@
 "nbGARCH","all","PL",true
 "nbGARCH","all","PM",true
 "nbGARCH","all","PP",true
-"nbGARCH","all","RM",true
+"nbGARCH","all","RM",false
 "nbGARCH","all","RO",true
 "nbGARCH","all","SF",true
 "nbGARCH","all","SH",true
