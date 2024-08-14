@@ -6,7 +6,7 @@ library(portalcasting)
 setup_production()
 
 #Run fastest model for testing in dry run
-portalcast(models = c("ESSS"))
+portalcast(models = c("ESSS", "pevGARCH"))
 
 #Evaluate model forecast
 evaluate_forecast()
