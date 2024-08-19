@@ -9,7 +9,7 @@ setup_production()
 portalcast(models = c("ESSS", "pevGARCH"))
 
 #Evaluate model forecast
-evaluate_forecast()
+evaluate_forecasts()
 
 #Zip all forecasts files and evaluation
 post_process()
