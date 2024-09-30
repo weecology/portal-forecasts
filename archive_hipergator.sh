@@ -27,7 +27,7 @@ git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
 # Needed to grant permissions through the deploy token
 # Removing the remote ensures that updates to the GitHub Token are added to the remote
 git remote remove deploy
-git remote add deploy https://${GITHUB_TOKEN}@github.com/weecology/portal-forecasts.git
+git remote add deploy https://${GITHUBTOKEN}@github.com/weecology/portal-forecasts.git
 
 # Create a new portal-forecasts tag for release
 git tag $current_date
@@ -39,5 +39,5 @@ git push --quiet deploy main
 
 # Create a new portal-forecasts release to trigger Zenodo archiving
 git push --quiet deploy --tags
-curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
+curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUBTOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
 
