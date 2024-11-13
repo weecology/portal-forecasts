@@ -7,6 +7,8 @@
 
 current_date=`date -I | head -c 10`
 
+source /blue/ewhite/hpc_maintenance/githubdeploytoken.txt
+
 # Copy version of portal_weekly_forecast.py used to run the forecast into the repo so we know what was run
 cp ../portal_weekly_forecast.sh .
 cp ../portal_dryrun_forecast.sh .
