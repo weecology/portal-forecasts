@@ -12,6 +12,8 @@
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
 cd /orange/ewhite/PortalForecasts/
 
+source /blue/ewhite/hpc_maintenance/githubdeploytoken.txt
+
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh
 module load git R singularity
