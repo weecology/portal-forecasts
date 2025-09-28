@@ -1,9 +1,6 @@
-# Archive forecasts by pushing weekly forecasts to GitHub and tagging a
-# release so that the GitHub-Zenodo integration archives the forecasts to
-# Zenodo
-
-# Only releases on cron driven events so that only weekly forecasts and not
-# simple changes to the codebase triggers archiving.
+# Archive forecasts by pushing weekly forecasts 
+# Push portal-forecast code to GitHub with a weekly tag
+# Push portal-forecast code and forecast to Zenodo
 
 current_date=`date -I | head -c 10`
 
@@ -17,11 +14,9 @@ cp ../portal_dryrun_forecast.sh .
 git config user.email "weecologydeploy@weecology.org"
 git config user.name "Weecology Deploy Bot"
 
-# Commit changes to portal-forecasts repo. Do not commit old forecasts files.
+# Commit changes to portal-forecasts repo. Do not commit forecasts directory
 git checkout main
 git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
-git ls-files ./forecasts --others --exclude-standard --directory | xargs git add
-git add forecasts/forecasts_evaluations.zip forecasts/forecasts_metadata.csv forecasts/forecasts_results.csv
 
 git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
 
@@ -41,5 +36,12 @@ git push --quiet deploy main
 
 # Create a new portal-forecasts release to trigger Zenodo archiving
 git push --quiet deploy --tags
-curl -v -i -X POST -H "Content-Type:application/json" -H "Authorization: token $GITHUBTOKEN" https://api.github.com/repos/weecology/portal-forecasts/releases -d "{\"tag_name\":\"$current_date\"}"
+
+# Publish large forecast data directly to Zenodo (bypassing GitHub's 1GB limit)
+echo "Publishing forecast data to Zenodo..."
+
+./publish_to_zenodo.sh
+
+echo "Archive process completed successfully!"
+echo "Code: https://github.com/weecology/portal-forecasts/releases/tag/$current_date"
 

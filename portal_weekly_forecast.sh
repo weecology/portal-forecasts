@@ -26,6 +26,8 @@ rm -rf portal-forecasts
 git clone https://github.com/weecology/portal-forecasts.git
 cd portal-forecasts
 
+singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')"
+
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R  2>&1 || exit 1
 

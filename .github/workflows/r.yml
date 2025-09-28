@@ -22,4 +22,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Check
-        run: Rscript tests/testthat/test-metadata.R
+        run: Rscript tests/testthat.R
