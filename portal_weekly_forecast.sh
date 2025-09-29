@@ -5,7 +5,6 @@
 #SBATCH --ntasks=1
 #SBATCH --mem=16gb
 #SBATCH --time=12:00:00
-#SBATCH --partition=hpg2-compute
 #SBATCH --output=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.out
 #SBATCH --error=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.err
 

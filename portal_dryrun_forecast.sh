@@ -5,14 +5,13 @@
 #SBATCH --ntasks=1
 #SBATCH --mem=16gb
 #SBATCH --time=12:00:00
-#SBATCH --partition=hpg2-compute
 #SBATCH --output=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.out
 #SBATCH --error=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.err
 
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
 cd /orange/ewhite/PortalForecasts/
 
-source /blue/ewhite/hpc_maintenance/zenodo_sandbox_token.txt
+source /blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh
