@@ -11,6 +11,8 @@
 echo "INFO: [$(date "+%Y-%m-%d %H:%M:%S")] Starting Weekly Forecast on $(hostname) in $(pwd)"
 cd /orange/ewhite/PortalForecasts/
 
+# Set environment variable for sandbox token
+export ZENODOENV="sandbox"
 source /blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
@@ -34,3 +36,6 @@ singularity run ../portalcasting_latest.sif Rscript PortalForecasts_dryrun.R  2>
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
 # Redirect stderr(2) to stdout(1) if command fails, and exit script with 1
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
+
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
+singularity run --env ZENODOENV=$ZENODOENV ../portalcasting_latest.sif bash archive_hipergator.sh

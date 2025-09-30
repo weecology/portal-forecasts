@@ -2,6 +2,9 @@ library(portalr)
 sessionInfo()
 library(portalcasting)
 
+# Set environment variable for sandbox token
+Sys.setenv(ZENODOENV = "sandbox")
+
 #Update data and models
 setup_production()
 

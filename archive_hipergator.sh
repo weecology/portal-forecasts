@@ -4,7 +4,14 @@
 
 current_date=`date -I | head -c 10`
 
-source /blue/ewhite/hpc_maintenance/githubdeploytoken.txt
+# Source the appropriate token based on environment variable
+if [ "$ZENODOENV" = "sandbox" ]; then
+    echo "Using Zenodo sandbox environment"
+    source /blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt
+else
+    echo "Using Zenodo production environment"
+    source /blue/ewhite/hpc_maintenance/githubdeploytoken.txt
+fi
 
 # Copy version of portal_weekly_forecast.py used to run the forecast into the repo so we know what was run
 cp ../portal_weekly_forecast.sh .
