@@ -1,5 +1,8 @@
 library(portalcasting)
 
+# Set environment variable for production token
+Sys.setenv(ZENODOENV = "production")
+
 #Downloading the full production archive is slow
 options(timeout=600)
 
