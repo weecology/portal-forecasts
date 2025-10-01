@@ -17,7 +17,7 @@ source /blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh
-module load git R singularity
+module load git R singularity rsync
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating singularlity container"
 singularity pull --force docker://weecology/portalcasting
