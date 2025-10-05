@@ -4,7 +4,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1
 #SBATCH --mem=16gb
-#SBATCH --time=12:00:00
+#SBATCH --time=30:00:00
 #SBATCH --output=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.out
 #SBATCH --error=/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.err
 
@@ -14,6 +14,14 @@ cd /orange/ewhite/PortalForecasts/
 # Set environment variable for production token
 export ZENODOENV="production"
 source /blue/ewhite/hpc_maintenance/githubdeploytoken.txt
+
+# debugenvironment variable
+if [ -n "$ZENODOTOKEN" ]; then
+    echo "ZENODOTOKEN set"
+else
+    echo "Error: No Zenodo token found. Please set ZENODOTOKEN environment variable or create /blue/ewhite/hpc_maintenance/zenododeploytoken.txt"
+    exit 1
+fi
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh
@@ -38,7 +46,7 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
-singularity run --env ZENODOENV=$ZENODOENV ../portalcasting_latest.sif bash archive_hipergator.sh
+singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if archiving to GitHub was successful"
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-forecasts_committed.R > ../testthat.log 2>&1 || exit 1
