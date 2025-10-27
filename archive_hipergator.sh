@@ -55,7 +55,7 @@ fi
 
 # Publish large forecast data directly to Zenodo (bypassing GitHub's 1GB limit)
 echo "Publishing forecast data to Zenodo..."
-python3 publish_to_zenodo.py 2>&1 || exit 1
+python3 publish_to_zenodo.py $current_date --new-record 2>&1 || exit 1
 
 if [ "$ZENODOENV" = "sandbox" ]; then
     echo "Sandbox does not need to push to GitHub"

@@ -22,20 +22,20 @@ module load git R singularity
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating singularlity container"
 singularity pull --force docker://weecology/portalcasting
 
-# echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portal-forecasts repository"
-# rm -rf portal-forecasts
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portal-forecasts repository"
+rm -rf portal-forecasts
 
-# git clone https://github.com/weecology/portal-forecasts.git
+git clone https://github.com/weecology/portal-forecasts.git
 cd portal-forecasts
 
-# singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')"
+singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')"
 
-# echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
-# singularity run ../portalcasting_latest.sif Rscript PortalForecasts_dryrun.R  2>&1 || exit 1
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
+singularity run ../portalcasting_latest.sif Rscript PortalForecasts_dryrun.R  2>&1 || exit 1
 
-# echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
-# # Redirect stderr(2) to stdout(1) if command fails, and exit script with 1
-# singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
+# Redirect stderr(2) to stdout(1) if command fails, and exit script with 1
+singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
 singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh
