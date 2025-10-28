@@ -13,22 +13,22 @@ cd /orange/ewhite/PortalForecasts/
 
 # Set environment variable for sandbox token
 export ZENODOENV="sandbox"
-source /blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
-source /etc/profile.d/modules.sh
-module load git R singularity
+source /etc/profile.d/modules.sh || exit 1
+module load git R singularity || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating singularlity container"
-singularity pull --force docker://weecology/portalcasting
+singularity pull --force docker://weecology/portalcasting || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portal-forecasts repository"
-rm -rf portal-forecasts
+rm -rf portal-forecasts 2>/dev/null || true
 
-git clone https://github.com/weecology/portal-forecasts.git
-cd portal-forecasts
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Cloning repository..."
+git clone https://github.com/weecology/portal-forecasts.git 2>&1 || exit 1
+cd portal-forecasts || exit 1
 
-singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')"
+singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')" || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts_dryrun.R  2>&1 || exit 1
@@ -38,4 +38,6 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
-singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh
+singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh || exit 1
+
+echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Dry run completed successfully"

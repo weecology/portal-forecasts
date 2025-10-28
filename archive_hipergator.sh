@@ -28,26 +28,34 @@ fi
 # Copy version of portal_weekly_forecast.py used to run the forecast into the repo so we know what was run
 cp ../portal_weekly_forecast.sh .
 cp ../portal_dryrun_forecast.sh .
+rm -f /orange/ewhite/PortalForecasts/archive_directory/* 2>/dev/null
 
 # Setup on weecologydeploy user
 git config user.email "weecologydeploy@weecology.org"
 git config user.name "Weecology Deploy Bot"
 
 # Commit changes to portal-forecasts repo. Do not commit forecasts directory
-git checkout main 2>/dev/null || echo "Already on main branch"
-git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh
+echo "Switching to main branch..."
+git checkout main 2>&1 || echo "Already on main branch"
+echo "Adding files to git..."
+git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh 2>&1 || exit 1
 
-git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"
+echo "Committing changes..."
+git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]" 2>&1 || exit 1
 
 # Add deploy remote
 # Needed to grant permissions through the deploy token
 # Removing the remote ensures that updates to the GitHub Token are added to the remote
-git remote remove deploy 2>/dev/null || true
-git remote add deploy https://${GITHUBTOKEN}@github.com/weecology/portal-forecasts.git
+echo "Removing existing deploy remote..."
+git remote remove deploy 2>&1 || echo "No existing deploy remote to remove"
+echo "Adding deploy remote..."
+git remote add deploy https://${GITHUBTOKEN}@github.com/weecology/portal-forecasts.git 2>&1 || exit 1
 
 # Create a new portal-forecasts tag for release (only if it doesn't exist)
+echo "Checking for existing tags..."
 if ! git tag -l | grep -q "^$current_date$"; then
-    git tag $current_date
+    echo "Creating new tag: $current_date"
+    git tag $current_date 2>&1 || exit 1
     echo "Created new tag: $current_date"
 else
     echo "Tag $current_date already exists, skipping tag creation"
@@ -60,8 +68,10 @@ python3 publish_to_zenodo.py $current_date --new-record 2>&1 || exit 1
 if [ "$ZENODOENV" = "sandbox" ]; then
     echo "Sandbox does not need to push to GitHub"
 else
-    git push --quiet deploy main
-    git push --quiet deploy --tags
+    echo "Pushing to GitHub main branch..."
+    git push deploy main 2>&1 || exit 1
+    echo "Pushing tags to GitHub..."
+    git push deploy --tags 2>&1 || exit 1
 fi
 
 echo "Archive process completed successfully!"

@@ -63,9 +63,9 @@ def create_archive():
     cmd = [
         "zip", "-r", archive_path,
         ".",
-        "-x", ".github/*",
         "-x", ".git/*", 
         "-x", ".ruff_cache/*",
+        "-x", "fit/*forecast*",
         "-x", "resources/*",
         "-x", "www/*",
         "-x", "tmp/*",
