@@ -25,10 +25,10 @@ fi
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Loading required modules"
 source /etc/profile.d/modules.sh || exit 1
-module load git R singularity || exit 1
+module load git R singularity 2>/dev/null || echo "Modules already loaded or not available"
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating singularlity container"
-singularity pull --force docker://weecology/portalcasting || exit 1
+singularity pull --force docker://weecology/portalcasting 2>/dev/null || echo "Container already exists or pull failed"
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Updating portal-forecasts repository"
 rm -rf portal-forecasts 2>/dev/null || true
@@ -37,7 +37,7 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Cloning repository..."
 git clone https://github.com/weecology/portal-forecasts.git 2>&1 || exit 1
 cd portal-forecasts || exit 1
 
-singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')" || exit 1
+singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')" 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R  2>&1 || exit 1

@@ -36,7 +36,7 @@ git config user.name "Weecology Deploy Bot"
 
 # Commit changes to portal-forecasts repo. Do not commit forecasts directory
 echo "Switching to main branch..."
-git checkout main 2>&1 || echo "Already on main branch"
+git checkout main 2>/dev/null || echo "Already on main branch"
 echo "Adding files to git..."
 git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh 2>&1 || exit 1
 
@@ -47,7 +47,7 @@ git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]" 2>&1 
 # Needed to grant permissions through the deploy token
 # Removing the remote ensures that updates to the GitHub Token are added to the remote
 echo "Removing existing deploy remote..."
-git remote remove deploy 2>&1 || echo "No existing deploy remote to remove"
+git remote remove deploy 2>/dev/null || echo "No existing deploy remote to remove"
 echo "Adding deploy remote..."
 git remote add deploy https://${GITHUBTOKEN}@github.com/weecology/portal-forecasts.git 2>&1 || exit 1
 
@@ -63,7 +63,7 @@ fi
 
 # Publish large forecast data directly to Zenodo (bypassing GitHub's 1GB limit)
 echo "Publishing forecast data to Zenodo..."
-python3 publish_to_zenodo.py $current_date --new-record 2>&1 || exit 1
+python3 publish_to_zenodo.py $current_date 2>&1 || exit 1
 
 if [ "$ZENODOENV" = "sandbox" ]; then
     echo "Sandbox does not need to push to GitHub"

@@ -44,9 +44,15 @@ def load_zenodo_metadata():
         return json.load(f)
 
 
-def get_latest_published_version(record_id, sandbox=False):
-    """Get the latest published version from Zenodo"""
-    return 15312542  # fixing the latest version
+def get_latest_published_version(record_id):
+    """Get the latest published version from Zenodo production"""
+    response = requests.get(f"{ZENODO_PRODUCTION_URL}/records/{record_id}")
+    response.raise_for_status()
+    concept_data = response.json()
+    latest_link = concept_data.get('links', {}).get('latest')
+    latest_record_id = latest_link.split('/')[-3]
+    print(f"✅ Found latest version: {latest_record_id}")
+    return int(latest_record_id)
 
 def create_archive():
     """Create the portal-forecasts archive"""
@@ -65,7 +71,7 @@ def create_archive():
         ".",
         "-x", ".git/*", 
         "-x", ".ruff_cache/*",
-        "-x", "fit/*forecast*",
+        "-x", "fits/*forecast*",
         "-x", "resources/*",
         "-x", "www/*",
         "-x", "tmp/*",
@@ -341,9 +347,8 @@ def main():
         print("🌐 Using Zenodo PRODUCTION environment")
         
         if not use_new_record:
-            # For new version approach, get latest record ID
             print(f"🔍 Getting latest record ID from concept record {concept_record_id}...")
-            latest_record_id = get_latest_published_version(concept_record_id, sandbox=False)
+            latest_record_id = get_latest_published_version(concept_record_id)
             if not latest_record_id:
                 print("❌ Could not get latest record ID")
                 sys.exit(1)

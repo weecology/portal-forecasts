@@ -3,9 +3,15 @@ ZENODO_URL <- "https://zenodo.org/api"
 # Production concept record ID
 PRODUCTION_CONCEPT_RECORD_ID <- "10553210"
 
-# Function to get latest published version from Zenodo
 get_latest_published_version <- function(record_id) {
-  15312542 # fixing the latest version
+  ua <- httr::user_agent("weecology/portal-forecasts")
+  production_url <- "https://zenodo.org/api"
+  response <- httr::RETRY("GET", sprintf("%s/records/%s", production_url, record_id), ua, times = 5, pause_base = 2)
+  httr::stop_for_status(response)
+  concept_data <- httr::content(response, as = "parsed", type = "application/json")
+  latest_link <- concept_data$links$latest
+  latest_record_id <- as.numeric(strsplit(latest_link, "/")[[1]][6])
+  return(latest_record_id)
 }
 
 download_zenodo_forecasts <- function(recid = PRODUCTION_CONCEPT_RECORD_ID,
