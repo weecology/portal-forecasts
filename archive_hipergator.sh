@@ -25,9 +25,6 @@ else
     echo "ZENODOTOKEN loaded from production token file"
 fi
 
-# Copy version of portal_weekly_forecast.py used to run the forecast into the repo so we know what was run
-cp ../portal_weekly_forecast.sh .
-cp ../portal_dryrun_forecast.sh .
 rm -f /orange/ewhite/PortalForecasts/archive_directory/* 2>/dev/null
 
 # Setup on weecologydeploy user
