@@ -7,8 +7,11 @@ import requests
 import subprocess
 import tempfile
 import shutil
+import time
 from datetime import datetime
 from pathlib import Path
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # Configuration
 ZENODO_SANDBOX_URL = "https://sandbox.zenodo.org/api"
@@ -72,6 +75,7 @@ def create_archive():
         "-x", ".git/*", 
         "-x", ".ruff_cache/*",
         "-x", "fits/*forecast*",
+        "-x", "forecasts/forecasts_evaluations.csv",
         "-x", "resources/*",
         "-x", "www/*",
         "-x", "tmp/*",
@@ -258,37 +262,60 @@ def clear_existing_files(token, zenodo_url, deposition_id):
     return True
 
 def upload_file(token, zenodo_url, deposition_id, archive_path):
-    """Upload archive file using bucket API"""
+    """Upload archive file using bucket API with retry logic"""
     print("📤 Uploading archive file...")
-    # Get bucket URL
+    
     headers = {'Authorization': f'Bearer {token}'}
     response = requests.get(f"{zenodo_url}/deposit/depositions/{deposition_id}", headers=headers)
     response.raise_for_status()
-    data = response.json()
-    bucket_url = data['links']['bucket']
+    bucket_url = response.json()['links']['bucket']
+    
     if not bucket_url:
         print("❌ No bucket URL found")
         return False
     
-    # Upload file to bucket
-    archive_basename = os.path.basename(archive_path)
-    upload_url = f"{bucket_url}/{archive_basename}"
+    upload_url = f"{bucket_url}/{os.path.basename(archive_path)}"
     
-    with open(archive_path, 'rb') as f:
-        response = requests.put(upload_url, data=f, headers=headers)
+    session = requests.Session()
+    retry_strategy = Retry(
+        total=5,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["PUT"]
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
     
-    print(f"Status Code: {response.status_code}")
-    if 200 <= response.status_code < 300:
-        print(f"✅ Upload completed: {upload_url}")
+    attempt = 0
+    max_attempts = 3
+    
+    while attempt < max_attempts:
+        attempt += 1
         try:
-            response_data = response.json()
-            print(f"📄 Upload response: {json.dumps(response_data, indent=2)}")
-        except:
-            print(f"📄 Upload response: {response.text}")
-        return True
-    else:
-        print(f"❌ Upload failed: {response.text}")
-        return False
+            with open(archive_path, 'rb') as f:
+                response = session.put(
+                    upload_url,
+                    data=f,
+                    headers=headers,
+                    timeout=(30, 3600),
+                    stream=False
+                )
+            
+            if 200 <= response.status_code < 300:
+                print(f"✅ Upload completed")
+                return True
+            
+            print(f"❌ Upload failed with status {response.status_code}")
+            
+        except requests.exceptions.SSLError:
+            print(f"❌ SSL Error on attempt {attempt}/{max_attempts}")
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Request error: {e}")
+        
+        if attempt < max_attempts:
+            wait_time = 2 ** attempt
+            time.sleep(wait_time)
+    
+    return False
 
 def publish_deposition(token, zenodo_url, deposition_id):
     """Publish the deposition"""
