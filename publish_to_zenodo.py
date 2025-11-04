@@ -47,14 +47,17 @@ def load_zenodo_metadata():
         return json.load(f)
 
 
-def get_latest_published_version(record_id):
-    """Get the latest published version from Zenodo production"""
-    response = requests.get(f"{ZENODO_PRODUCTION_URL}/records/{record_id}")
+def get_latest_published_version(record_id, zenodo_url):
+    """Get the latest published version from Zenodo"""
+    response = requests.get(f"{zenodo_url}/records/{record_id}")
+    if response.status_code == 404 or response.status_code == 410:
+        return None
     response.raise_for_status()
     concept_data = response.json()
     latest_link = concept_data.get('links', {}).get('latest')
+    if not latest_link:
+        return None
     latest_record_id = latest_link.split('/')[-3]
-    print(f"✅ Found latest version: {latest_record_id}")
     return int(latest_record_id)
 
 def create_archive():
@@ -343,19 +346,13 @@ def main():
     print("🚀 Portal Forecasts Zenodo Publisher")
     print("=" * 35)
     
-    # Get version tag and mode from command line arguments
+    # Get version tag from command line arguments
     if len(sys.argv) < 2:
         print("❌ Error: Version tag is required")
-        print("Usage: python3 publish_to_zenodo.py <version_tag> [--new-record]")
-        print("  --new-record: Create new record (GitHub style) instead of new version")
+        print("Usage: python3 publish_to_zenodo.py <version_tag>")
         sys.exit(1)
     
     version_tag = sys.argv[1]
-    use_new_record = "--new-record" in sys.argv
-    mode = "New Record (GitHub style)" if use_new_record else "New Version (Manual style)"
-    
-    print(f"📝 Version tag to publish: {version_tag}")
-    print(f"🔄 Publishing mode: {mode}")
     
     # Load token
     token = load_token()
@@ -372,14 +369,28 @@ def main():
         zenodo_url = ZENODO_PRODUCTION_URL
         concept_record_id = PRODUCTION_CONCEPT_RECORD_ID
         print("🌐 Using Zenodo PRODUCTION environment")
-        
-        if not use_new_record:
-            print(f"🔍 Getting latest record ID from concept record {concept_record_id}...")
-            latest_record_id = get_latest_published_version(concept_record_id)
-            if not latest_record_id:
-                print("❌ Could not get latest record ID")
-                sys.exit(1)
-            print(f"✅ Using latest production record ID: {latest_record_id}")
+    
+    print(f"📝 Version tag to publish: {version_tag}")
+    
+    # Get latest record ID for creating new version
+    latest_record_id = None
+    print(f"🔍 Getting latest record ID from concept record {concept_record_id}...")
+    latest_record_id = get_latest_published_version(concept_record_id, zenodo_url)
+    
+    # Determine mode: production always uses new version, sandbox uses new record if no latest_record_id
+    if latest_record_id:
+        print(f"✅ Using latest record ID: {latest_record_id}")
+        use_new_record = False
+        mode = "New Version (Manual style)"
+    elif zenodo_env == 'sandbox':
+        print("⚠️  Could not get latest record ID, will create new record instead")
+        use_new_record = True
+        mode = "New Record (GitHub style)"
+    else:
+        print("❌ Could not get latest record ID")
+        sys.exit(1)
+    
+    print(f"🔄 Publishing mode: {mode}")
     
     # Test token authentication
     if not test_token_auth(token, zenodo_url):
@@ -412,7 +423,7 @@ def main():
     # Upload file
     if not upload_file(token, zenodo_url, deposition_id, archive_path):
         sys.exit(1)
-    
+
     # Publish
     new_record_id, publish_data = publish_deposition(token, zenodo_url, deposition_id)
     if not new_record_id:

@@ -38,7 +38,7 @@ echo "Adding files to git..."
 git add data/* models/* portal_weekly_forecast.sh portal_dryrun_forecast.sh 2>&1 || exit 1
 
 echo "Committing changes..."
-git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]" 2>&1 || exit 1
+git commit -m "Update forecasts: HiperGator Build $current_date [ci skip]"  2>/dev/null || echo "Nothing committed"
 
 # Add deploy remote
 # Needed to grant permissions through the deploy token
