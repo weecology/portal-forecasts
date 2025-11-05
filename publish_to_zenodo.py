@@ -32,33 +32,62 @@ def load_token():
     token_file = ("/blue/ewhite/hpc_maintenance/zenodosandboxtoken.txt" 
                   if zenodo_env == 'sandbox' 
                   else "/blue/ewhite/hpc_maintenance/githubdeploytoken.txt")
-    # Read token from file
-    with open(token_file, 'r') as f:
-        for line in f:
-            line = line.strip()
-            if line.startswith('ZENODOTOKEN=') and not line.startswith('#'):
-                return line.split('=', 1)[1].strip('"')
     
-    return None
+    # Try to read token from file
+    try:
+        if not os.path.exists(token_file):
+            print(f"❌ Error: Token file not found: {token_file}", file=sys.stderr)
+            return None
+        
+        with open(token_file, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('ZENODOTOKEN=') and not line.startswith('#'):
+                    token = line.split('=', 1)[1].strip('"')
+                    if token:
+                        return token
+        
+        print(f"❌ Error: ZENODOTOKEN not found in file: {token_file}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"❌ Error reading token file {token_file}: {e}", file=sys.stderr)
+        return None
 
 def load_zenodo_metadata():
     """Load metadata from .zenodo.json file"""
-    with open('.zenodo.json', 'r') as f:
-        return json.load(f)
+    try:
+        if not os.path.exists('.zenodo.json'):
+            print("❌ Error: .zenodo.json file not found", file=sys.stderr)
+            return None
+        with open('.zenodo.json', 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"❌ Error: Failed to parse .zenodo.json: {e}", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"❌ Error: Failed to read .zenodo.json: {e}", file=sys.stderr)
+        return None
 
 
 def get_latest_published_version(record_id, zenodo_url):
     """Get the latest published version from Zenodo"""
-    response = requests.get(f"{zenodo_url}/records/{record_id}")
-    if response.status_code == 404 or response.status_code == 410:
+    try:
+        response = requests.get(f"{zenodo_url}/records/{record_id}", timeout=30)
+        if response.status_code == 404 or response.status_code == 410:
+            return None
+        response.raise_for_status()
+        concept_data = response.json()
+        latest_link = concept_data.get('links', {}).get('latest')
+        if not latest_link:
+            return None
+        latest_record_id = latest_link.split('/')[-3]
+        return int(latest_record_id)
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error: Failed to get latest published version from Zenodo: {e}", file=sys.stderr)
         return None
-    response.raise_for_status()
-    concept_data = response.json()
-    latest_link = concept_data.get('links', {}).get('latest')
-    if not latest_link:
+    except (ValueError, KeyError, IndexError) as e:
+        print(f"❌ Error: Failed to parse latest version from Zenodo response: {e}", file=sys.stderr)
         return None
-    latest_record_id = latest_link.split('/')[-3]
-    return int(latest_record_id)
 
 def create_archive():
     """Create the portal-forecasts archive"""
@@ -167,6 +196,9 @@ def update_metadata(token, zenodo_url, deposition_id, version_tag):
     print("📝 Updating deposition metadata...")
     current_date = datetime.now().strftime("%Y-%m-%d")
     zenodo_metadata = load_zenodo_metadata()
+    if not zenodo_metadata:
+        print("❌ Error: Failed to load Zenodo metadata", file=sys.stderr)
+        return False
     version = version_tag
     
     # Use creators directly from .zenodo.json (no conversion needed)
@@ -357,6 +389,7 @@ def main():
     # Load token
     token = load_token()
     if not token:
+        print("❌ Error: Failed to load ZENODOTOKEN. Check environment variable or token file.", file=sys.stderr)
         sys.exit(1)
     
     # Determine environment
@@ -375,7 +408,11 @@ def main():
     # Get latest record ID for creating new version
     latest_record_id = None
     print(f"🔍 Getting latest record ID from concept record {concept_record_id}...")
-    latest_record_id = get_latest_published_version(concept_record_id, zenodo_url)
+    try:
+        latest_record_id = get_latest_published_version(concept_record_id, zenodo_url)
+    except Exception as e:
+        print(f"❌ Error: Unexpected error getting latest record ID: {e}", file=sys.stderr)
+        latest_record_id = None
     
     # Determine mode: production always uses new version, sandbox uses new record if no latest_record_id
     if latest_record_id:
@@ -387,18 +424,20 @@ def main():
         use_new_record = True
         mode = "New Record (GitHub style)"
     else:
-        print("❌ Could not get latest record ID")
+        print("❌ Error: Could not get latest record ID from production Zenodo. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     print(f"🔄 Publishing mode: {mode}")
     
     # Test token authentication
     if not test_token_auth(token, zenodo_url):
+        print("❌ Error: Token authentication failed. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     # Create archive
     archive_path = create_archive()
     if not archive_path:
+        print("❌ Error: Failed to create archive. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     # Create new version or new record based on mode
@@ -410,23 +449,28 @@ def main():
         deposition_id, deposition_data = create_new_version(token, zenodo_url, latest_record_id)
     
     if not deposition_id:
+        print("❌ Error: Failed to create deposition (new version or new record). Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     # Update metadata
     if not update_metadata(token, zenodo_url, deposition_id, version_tag):
+        print("❌ Error: Failed to update metadata. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     # Clear existing files (only needed for new version approach)
     if not use_new_record:
-        clear_existing_files(token, zenodo_url, deposition_id)
+        if not clear_existing_files(token, zenodo_url, deposition_id):
+            print("⚠️  Warning: Failed to clear existing files, but continuing anyway...", file=sys.stderr)
     
     # Upload file
     if not upload_file(token, zenodo_url, deposition_id, archive_path):
+        print("❌ Error: Failed to upload archive file. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
 
     # Publish
     new_record_id, publish_data = publish_deposition(token, zenodo_url, deposition_id)
     if not new_record_id:
+        print("❌ Error: Failed to publish deposition. Cannot proceed.", file=sys.stderr)
         sys.exit(1)
     
     # Print final results
@@ -446,4 +490,13 @@ def main():
     sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n❌ Error: Script interrupted by user", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f"\n❌ Error: Unexpected error in main function: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
+        sys.exit(1)

@@ -47,7 +47,10 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
-singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh || exit 1
+if ! singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN ../portalcasting_latest.sif bash archive_hipergator.sh 2>&1; then
+    echo "ERROR [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo FAILED"
+    exit 1
+fi
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if archiving to GitHub was successful"
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-forecasts_committed.R > ../testthat.log 2>&1 || exit 1
