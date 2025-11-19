@@ -60,8 +60,15 @@ fi
 
 # Publish large forecast data directly to Zenodo (bypassing GitHub's 1GB limit)
 echo "Publishing forecast data to Zenodo..."
-if ! python3 publish_to_zenodo.py $current_date 2>&1; then
-    echo "ERROR: Failed to publish to Zenodo. Exit code: $?"
+# Determine error log file based on job name
+if [ "$SLURM_JOB_NAME" = "portal_dryrun_forecast" ]; then
+    ERROR_LOG="/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.err"
+else
+    ERROR_LOG="/orange/ewhite/PortalForecasts/portal_weekly_forecast_log.err"
+fi
+# Redirect stderr to the sbatch error file (append mode)
+if ! python3 publish_to_zenodo.py $current_date 2>> "$ERROR_LOG"; then
+    echo "ERROR: Failed to publish to Zenodo. Exit code: $?" | tee -a "$ERROR_LOG"
     exit 1
 fi
 
