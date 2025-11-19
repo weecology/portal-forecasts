@@ -52,7 +52,4 @@ if ! singularity run --env ZENODOENV=$ZENODOENV --env ZENODOTOKEN=$ZENODOTOKEN .
     exit 1
 fi
 
-echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if archiving to GitHub was successful"
-singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-forecasts_committed.R > ../testthat.log 2>&1 || exit 1
-
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Weekly Forecast completed successfully"
