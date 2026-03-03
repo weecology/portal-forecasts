@@ -13,7 +13,5 @@ bootstrap_project_root <- function() {
 }
 
 project_root <- bootstrap_project_root()
-source(file.path(project_root, "download_zenodo_forecasts.R"))
-download_zenodo_forecasts()
 
 test_file(file.path(project_root, "tests", "testthat", "test-successful_forecasts.R"), reporter = c("check"))
