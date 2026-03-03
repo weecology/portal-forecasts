@@ -37,8 +37,6 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Cloning repository..."
 git clone https://github.com/weecology/portal-forecasts.git 2>&1 || exit 1
 cd portal-forecasts || exit 1
 
-singularity run ../portalcasting_latest.sif Rscript -e "source('download_zenodo_forecasts.R'); download_zenodo_forecasts(outdir = 'forecasts')" 2>&1 || exit 1
-
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R  2>&1 || exit 1
 
