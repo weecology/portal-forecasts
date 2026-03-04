@@ -4,7 +4,7 @@
 #SBATCH --mail-type=FAIL
 #SBATCH --ntasks=1
 #SBATCH --mem=16gb
-#SBATCH --time=12:00:00
+#SBATCH --time=20:00:00
 #SBATCH --output=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.out
 #SBATCH --error=/orange/ewhite/PortalForecasts/portal_dryrun_forecast_log.err
 
