@@ -15,7 +15,7 @@ find_project_root <- function() {
 get_project_paths <- function() {
   project_root <- find_project_root()
   list(
-    root = project_root,
+    root = project_root
   )
 }
 

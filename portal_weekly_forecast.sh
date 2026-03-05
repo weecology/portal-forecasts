@@ -41,7 +41,7 @@ echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Running Portal Forecasts"
 singularity run ../portalcasting_latest.sif Rscript PortalForecasts.R  2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Checking if forecasts were successful"
-# Redirect stderr(2) to stdout(1) if command fails, and exit script with 1
+
 singularity run ../portalcasting_latest.sif Rscript tests/testthat/test-successful_forecasts.R > ../testthat.log 2>&1 || exit 1
 
 echo "INFO [$(date "+%Y-%m-%d %H:%M:%S")] Archiving to GitHub and Zenodo"
